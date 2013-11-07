@@ -58,21 +58,19 @@ loop do
       IO.copy_stream(file, socket)
     end
   else
-    message = "File not found\n"
-
-    socket.print "HTTP/1.1 404 Not Found\r\n" +
-                 "Content-Type: text/plain\r\n" +
-                 "Content-Length: #{message.size}\r\n" +
-                 "Connection: close\r\n"
+    File.open("public/404.html") do |file|
+      socket.print "HTTP/1.1 404 Not Found\r\n" +
+                  "Content-Type: text/html\r\n" +
+                  "Content-Length: #{file.size}\r\n" +
+                  "Connection: close\r\n"
 
     socket.print "\r\n"
 
-    socket.print message
+    IO.copy_stream(file, socket)
+    end
   end
 
   socket.close
 end
-
-
 
 
